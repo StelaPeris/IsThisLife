@@ -148,14 +148,18 @@ void updateStabilizer() {
         
         // --- ROLL AXIS (CASCADING CONTROLLER) ---
         // 1. Outer Loop: Find target Secondary Roll based on Main Roll Error
-        float rOuterError =  mRoll - targetRoll;
-        float target_sRoll = calculateOuterPID(rOuterError, roll_outer_integral, roll_outer_prev_error,
-                                               roll_outer_prev_derivative, roll_outer_prev_output,
-                                               robotSettings.kp_outer_roll, robotSettings.ki_outer_roll, robotSettings.kd_outer_roll, 
-                                               dt, MAX_OUTER_TARGET_ANGLE, pid_first_run);
+        // float rOuterError =  mRoll - targetRoll;
+        // float target_sRoll = calculateOuterPID(rOuterError, roll_outer_integral, roll_outer_prev_error,
+        //                                        roll_outer_prev_derivative, roll_outer_prev_output,
+        //                                        robotSettings.kp_outer_roll, robotSettings.ki_outer_roll, robotSettings.kd_outer_roll, 
+        //                                        dt, MAX_OUTER_TARGET_ANGLE, pid_first_run);
 
         // 2. OLD Inner Loop: Hit the Secondary Roll target generated above
-        float rInnerError = target_sRoll - sRoll;
+        float rollRel = mRoll - sRoll;
+
+        float target_roll = inputY * MAX_OUTER_TARGET_ANGLE;
+
+        float rInnerError = target_roll - rollRel;
         float outY = calculateAxisPID(rInnerError, roll_inner_integral, roll_inner_prev_error, roll_inner_prev_derivative, roll_inner_prev_output, 
                                         robotSettings.kp_roll, robotSettings.ki_roll, robotSettings.kd_roll, 
                                         dt, pid_first_run);
@@ -173,7 +177,8 @@ void updateStabilizer() {
         if (outY > 1.0f) outY = 1.0f;
         if (outY < -1.0f) outY = -1.0f;
 
-        DEBUG_PRINTF("targetRoll: %.3f, mRoll: %.3f, rOuterError: %.3f, target_sRoll: %.3f, sRoll: %.3f,  rInnerError: %.3f, outY: %.3f\n", targetRoll, mRoll, rOuterError, target_sRoll, sRoll, rInnerError, outY);
+        // DEBUG_PRINTF("targetRoll: %.3f, mRoll: %.3f, rOuterError: %.3f, target_sRoll: %.3f, sRoll: %.3f,  rInnerError: %.3f, outY: %.3f\n", targetRoll, mRoll, rOuterError, target_sRoll, sRoll, rInnerError, outY);
+        DEBUG_PRINTF("target_roll: %.3f, rolRell: %.3f,  rInnerError: %.3f, outY: %.3f\n", target_roll, rollRel, rInnerError, outY);
         pid_first_run = false; 
         // outY = applyRollSafety(outY, mRoll, robotSettings.roll_dir);
         

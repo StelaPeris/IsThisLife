@@ -120,6 +120,9 @@ void calculateAndSaveOffsets() {
 static float cached_mRoll = 0.0f, cached_mPitch = 0.0f, cached_mYaw = 0.0f;
 static float cached_sRoll = 0.0f, cached_sPitch = 0.0f, cached_sYaw = 0.0f;
 
+static float cached_mQw = 1.0f, cached_mQx = 0.0f, cached_mQy = 0.0f, cached_mQz = 0.0f;
+static float cached_sQw = 1.0f, cached_sQx = 0.0f, cached_sQy = 0.0f, cached_sQz = 0.0f;
+
 // ADD the new update function
 void updateIMUs() {
     if (!sensorsReady) return;
@@ -153,6 +156,9 @@ void updateIMUs() {
     // Do the heavy trigonometry outside the mutex lock
     quaternionToEuler(qw, qx, qy, qz, &cached_mRoll, &cached_mPitch, &cached_mYaw);
     quaternionToEuler(sqw, sqx, sqy, sqz, &cached_sRoll, &cached_sPitch, &cached_sYaw);
+
+    cached_mQw = qw;  cached_mQx = qx;  cached_mQy = qy;  cached_mQz = qz;
+    cached_sQw = sqw; cached_sQx = sqx; cached_sQy = sqy; cached_sQz = sqz;
 }
 
 // REPLACE the existing readMainIMU function
@@ -167,6 +173,14 @@ void readSecondaryIMU(float* roll, float* pitch, float* yaw) {
     *roll = cached_sRoll;
     *pitch = cached_sPitch;
     *yaw = cached_sYaw;
+}
+
+void readMainQuat(float* w, float* x, float* y, float* z) {
+    *w = cached_mQw; *x = cached_mQx; *y = cached_mQy; *z = cached_mQz;
+}
+
+void readSecondaryQuat(float* w, float* x, float* y, float* z) {
+    *w = cached_sQw; *x = cached_sQx; *y = cached_sQy; *z = cached_sQz;
 }
 
 void printIMU() {

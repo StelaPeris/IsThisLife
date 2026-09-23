@@ -12,6 +12,8 @@ int16_t getIMUTemp();
 void updateIMUs(); // <-- ADD THIS
 void readMainIMU(float* roll, float* pitch, float* yaw);
 void readSecondaryIMU(float* roll, float* pitch, float* yaw);
+void readMainQuat(float* w, float* x, float* y, float* z);        // NOVO
+void readSecondaryQuat(float* w, float* x, float* y, float* z);   // NOVO
 void printIMU();
 
 // --- Calibration Status ---

@@ -1,5 +1,5 @@
 {
-    "com_port": "COM21",
+    "com_port": "/dev/ttyUSB0",
     "baud_rate": 115200,
     "auto_reconnect": true,
     "tunable_settings": {
@@ -11,8 +11,8 @@
         "System & Misc": ["pitch_dir", "roll_dir", "dev_mode"]
     },
     "assignments": {
-        "4": {
-            "guid": "030082795e040000ea02000000007200",
+        "1": {
+            "guid": "0300443e6d0400001fc2000005030000",
             "instance_index": 0,
             "scales": {
                 "vx": 100,
@@ -22,12 +22,12 @@
             "deadzone": 10,
             "mappings": {
                 "vx": ["axis", 1],
-                "vy": ["axis", 2],
+                "vy": ["axis", 0],
                 "omega": ["none", 0],
                 "estop": ["button", 0],
                 "arm": ["button", 1],
                 "cruise_control": ["button", 3],
-                "mode_switch": ["button", 2]
+                "mode_switch": ["button", 4]
             }
         }
     }

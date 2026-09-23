@@ -25,6 +25,12 @@ private:
     bool reverse2;
 
     void trackWraps(int servoNum, int newRaw);
+
+    // NOVO - rod speed
+    long prevRodPos = 0;
+    volatile float cachedRodSpeed = 0.0f;
+    bool rodSpeedInit = false;
+
 public:
     Servo_ST3215(int servoID1, int servoID2);
     bool begin(HardwareSerial& serialPort, int rx, int tx);
@@ -54,6 +60,7 @@ public:
 
     // Feedback
     long getPosition(int id);
+    float getRodSpeed();
 };
 
 #endif

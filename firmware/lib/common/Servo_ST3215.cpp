@@ -123,6 +123,16 @@ void Servo_ST3215::update() {
     if (st.FeedBack(id1) != -1) trackWraps(1, st.ReadPos(-1));
     if (st.FeedBack(id2) != -1) trackWraps(2, st.ReadPos(-1));
 
+    // --- ROD SPEED: fiksni dt = 4ms jer smo u 250 Hz tasku ---
+    long rodPos = getPosition(id2);            // apsolutna, wrap-free, reverse2 primijenjen
+    if (rodSpeedInit) {
+        long d = rodPos - prevRodPos;
+        float raw = (d * (2.0f * M_PI / 4096.0f)) / 0.004f;   // rad/s
+        cachedRodSpeed = 0.9f * cachedRodSpeed + 0.1f * raw;  // low-pass
+    }
+    prevRodPos = rodPos;
+    rodSpeedInit = true;
+
     // Static variables to remember the last sent speed (prevents bus flooding)
     static int last_s1 = 0;
     static int last_s2 = 0;
@@ -264,6 +274,10 @@ void Servo_ST3215::resetPositionToZero() {
     zeroOffset2 = 0;
     
     Serial.println("Position Reset: Current location is now absolute 0.");
+}
+
+float Servo_ST3215::getRodSpeed() {
+    return cachedRodSpeed;
 }
 
 void Servo_ST3215::setLoadThreshold(int threshold) { torqueThreshold = threshold; }

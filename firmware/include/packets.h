@@ -60,6 +60,14 @@ struct __attribute__((packed)) TelemetryPacket : public PacketHeader {
     float main_pitch;     
     float pend_roll;      
     float pend_pitch;
+    float main_yaw;   // <-- NOVO
+    float pend_yaw;   // <-- NOVO
+    float main_qw, main_qx, main_qy, main_qz;   // NOVO
+    float pend_qw, pend_qx, pend_qy, pend_qz;   // NOVO
+
+    int32_t pend_servo_pos1;
+    int32_t pend_servo_pos2;
+    float rod_speed;
 };
 
 struct __attribute__((packed)) RequestConfirmPacket : public PacketHeader {

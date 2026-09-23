@@ -12,9 +12,13 @@
 #include "packets.h"
 #include <Arduino.h>
 #include <esp_now.h>
+#include <cmath>
+#include "../../../lib/common/Servo_ST3215.h"
 
 // Control packet counter
 uint8_t controlPacketCount = 0;
+
+extern Servo_ST3215 pendServos;
 
 void sendTelemetry(uint8_t type, uint32_t hb, uint16_t latency_ms) {
     TelemetryPacket Tele{};
@@ -72,6 +76,18 @@ void sendTelemetry(uint8_t type, uint32_t hb, uint16_t latency_ms) {
     Tele.main_pitch = mPitch;
     Tele.pend_roll = sRoll;
     Tele.pend_pitch = sPitch;
+    Tele.main_yaw = mYaw;      // <-- NOVO
+    Tele.pend_yaw = sYaw;      // <-- NOVO
+
+    Tele.pend_servo_pos1 = pendServos.getPosition(1);
+    Tele.pend_servo_pos2 = pendServos.getPosition(2);
+    Tele.rod_speed = pendServos.getRodSpeed();      // vec izracunato u 250 Hz tasku
+
+    float mqw, mqx, mqy, mqz, sqw2, sqx2, sqy2, sqz2;
+    readMainQuat(&mqw, &mqx, &mqy, &mqz);
+    readSecondaryQuat(&sqw2, &sqx2, &sqy2, &sqz2);
+    Tele.main_qw = mqw; Tele.main_qx = mqx; Tele.main_qy = mqy; Tele.main_qz = mqz;
+    Tele.pend_qw = sqw2; Tele.pend_qx = sqx2; Tele.pend_qy = sqy2; Tele.pend_qz = sqz2;
 
     esp_err_t res = esp_now_send(robotSettings.controller_mac, (uint8_t*)&Tele, sizeof(Tele));
     

@@ -9,7 +9,12 @@ TelemetryData = namedtuple('TelemetryData', [
     'type', 'robot_id', 'heartbeat', 'acked_type', 'status', 'mode',
     'battery_mv', 'motor_temp', 'error_flags', 'latency_ms',
     'imu_calibration',
-    'main_roll', 'main_pitch', 'pend_roll', 'pend_pitch'
+    'main_roll', 'main_pitch', 'pend_roll', 'pend_pitch',
+    'main_yaw', 'pend_yaw',
+    'main_qw', 'main_qx', 'main_qy', 'main_qz',
+    'pend_qw', 'pend_qx', 'pend_qy', 'pend_qz',
+    'pend_servo_pos1', 'pend_servo_pos2',
+    'rod_speed'
 ])
 
 ConfirmRequest = namedtuple('ConfirmRequest', [
@@ -21,7 +26,8 @@ SettingResponse = namedtuple('SettingResponse', [
     'type', 'robot_id', 'heartbeat', 'key', 'value'
 ])
 
-BINARY_FORMAT_TELEMETRY = "<BBIBBBHhBHHffff"
+# BINARY_FORMAT_TELEMETRY = "<BBIBBBHhBHHffffff"
+BINARY_FORMAT_TELEMETRY = "<BBIBBBHhBHH" + "f" * 14 + "iif"
 PAYLOAD_SIZE_TELEMETRY = struct.calcsize(BINARY_FORMAT_TELEMETRY)
 
 BINARY_FORMAT_CONFIRM = "<BBIB32s"
