@@ -17,13 +17,15 @@ uint8_t sequenceId = 0;
 uint32_t sequenceStepStartTime = 0;
 
 void startSequence(uint8_t sequence_id) {
-    if (!isEstopActive()) {
+    // Calibration only reads the IMU and keeps motors off, so it must be
+    // allowed while E-STOP is active (robot boots in E-STOP + calibration required).
+    if (!isEstopActive() || sequence_id == SEQUENCE_CALIBRATION_FULL) {
         DEBUG_PRINTF("DEBUG: Starting sequence ID %d\n", sequence_id);
         sequenceActive = true;
         sequenceId = sequence_id;
         currentSequenceStep = 0;
         sequenceStepStartTime = millis();
-        motorsEnabled = false;  // Disable motors during sequence
+        motorsEnabled = false;
         stopMotors();
     } else {
         DEBUG_PRINTLN("DEBUG: Cannot start sequence - E-STOP active");
