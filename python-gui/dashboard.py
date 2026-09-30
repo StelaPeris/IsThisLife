@@ -315,7 +315,7 @@ class Dashboard:
             if r_id not in active:
                 robot = self.robot_state.get_robot(r_id)
                 packet_sender.send_control(r_id, robot.control_mode, 0.0, 0.0, 0.0)
-        self.root.after(500, self._periodic_control_loop)
+        self.root.after(100, self._periodic_control_loop)
 
     def cleanup(self):
         serial_comm.disconnect()
